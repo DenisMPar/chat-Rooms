@@ -1,5 +1,5 @@
 import firebase from "firebase";
-const API_BASE_URL = "https://chat-rooms-m6.herokuapp.com/";
+const API_BASE_URL = "https://chat-rooms-m6.herokuapp.com";
 type Message = {
   roomId: string;
   message: {
