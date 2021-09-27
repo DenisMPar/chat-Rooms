@@ -1,5 +1,5 @@
 import firebase from "firebase";
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://chat-rooms-m6.herokuapp.com/";
 type Message = {
   roomId: string;
   message: {
@@ -17,7 +17,7 @@ const rtdb = firebase.database();
 
 //Hace un post a la api para agregar un nuevo mensaje en la database
 function enviarMensaje(message: Message) {
-  fetch("http://localhost:3000/rooms/" + message.roomId, {
+  fetch(API_BASE_URL + "/rooms" + message.roomId, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
