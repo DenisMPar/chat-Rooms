@@ -38,7 +38,7 @@ const state = {
     for (const cb of this.listeners) {
       cb();
     }
-    console.log("soy el state he cambiado ", this.data);
+
     sessionStorage.setItem("state", JSON.stringify(newState));
   },
   subscribe(callback: (any) => any) {

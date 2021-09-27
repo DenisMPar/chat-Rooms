@@ -17,7 +17,7 @@ const rtdb = firebase.database();
 
 //Hace un post a la api para agregar un nuevo mensaje en la database
 function enviarMensaje(message: Message) {
-  fetch(API_BASE_URL + "/rooms" + message.roomId, {
+  fetch(API_BASE_URL + "/rooms/" + message.roomId, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
