@@ -5,12 +5,16 @@ class HomePage extends HTMLElement {
   shadow: ShadowRoot = this.attachShadow({ mode: "open" });
   connectedCallback() {
     const currentState = state.getState();
+    //limpia los mensajes guardados en el state, evita que se muestren conversaciones antiguas
     currentState.messages = [];
     state.setState(currentState);
+
     this.render();
+
     const roomInputEl = this.shadow.querySelector(".display__none");
     const selectInputEl = this.shadow.getElementById("input-select") as any;
 
+    //oculta o muestra el input "room id"
     selectInputEl.addEventListener("change", (e) => {
       const target = e.target as any;
       if (target.value == "value2") {
@@ -22,7 +26,7 @@ class HomePage extends HTMLElement {
 
     const formEl = this.shadow.querySelector("form");
 
-    //evento que guarda el nombre de usuario
+    //evento que guarda el nombre y el email de usuario
     formEl.addEventListener("submit", (e) => {
       e.preventDefault();
       const target = e.target as any;
@@ -30,10 +34,12 @@ class HomePage extends HTMLElement {
         name: target.nombre.value,
         email: target.email.value,
       });
+      //luego de obtenidos los datos registra el user en la database
       state.signIn((err) => {
         if (err) {
           console.error("algo salio mal");
         } else {
+          //decide si crear un room nuevo o unirse a uno existente
           if (selectInputEl.value == "value1") {
             state.createRoom(state.joinRoom);
           } else {

@@ -7,16 +7,21 @@ class ChatPage extends HTMLElement {
   roomId = "";
   connectedCallback() {
     const currentState = state.getState();
+    //si el estado no tiene un email, carga los datos del session storage
+    //sirve para cuando se recarga la pagina
     if (!currentState.email) {
       state.init();
     }
+
     state.subscribe(() => {
       const currentState = state.getState();
       this.messages = currentState.messages;
       this.roomId = currentState.roomId;
       this.agregarMensajesRoomId();
     });
+
     this.render();
+
     const container = this.shadow.querySelector(".container");
     const formEl = container.querySelector("form-el");
     const shadowForm = formEl.shadowRoot.querySelector("form");
@@ -31,7 +36,7 @@ class ChatPage extends HTMLElement {
     });
   }
 
-  //agrega los mensajes al container del chat
+  //agrega los mensajes que estan en el estado al container del chat
   agregarMensajesRoomId() {
     const containerMessages = this.shadow.querySelector(
       ".chat__container-messages"

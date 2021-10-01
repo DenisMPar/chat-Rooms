@@ -11,12 +11,11 @@ const state = {
     realTimeId: "",
   },
   listeners: [],
+  //sincroniza el state con el session storage
+  //y vuelve a conectarse al roomId del state
   init() {
-    console.log("init");
-
     const sessionState = sessionStorage.getItem("state");
     const sessionStateParsed = JSON.parse(sessionState);
-    console.log("soy el session ");
     state.setState(JSON.parse(sessionState));
     state.setNameAndEmail({
       name: sessionStateParsed.name,
@@ -38,24 +37,26 @@ const state = {
     for (const cb of this.listeners) {
       cb();
     }
-
     sessionStorage.setItem("state", JSON.stringify(newState));
   },
   subscribe(callback: (any) => any) {
     this.listeners.push(callback);
   },
+
+  //guara el roomId
   setRoomId(roomId) {
     const currentState = this.getState();
     currentState.roomId = roomId;
     state.setState(currentState);
   },
-
+  //guarda el nombre y el email del user
   setNameAndEmail(params: { email: string; name: string }) {
     const currentState = this.getState();
     currentState.name = params.name;
     currentState.email = params.email;
     this.setState(currentState);
   },
+  //Usa el email para crear un usuario nuevo en la database
   signIn(callback?) {
     const currentState = this.getState();
     if (currentState.email) {
@@ -75,6 +76,7 @@ const state = {
         .then((res) => {
           currentState.userId = res.id;
           this.setState(currentState);
+          //este callback sirve para ejecutar una funcion luego de que el usuario fue creado
           if (callback) {
             callback();
           }
@@ -84,6 +86,7 @@ const state = {
       callback(true);
     }
   },
+  //Crea un nuevo room en la database
   createRoom(callback?) {
     const currentState = this.getState();
     if (currentState.userId) {
@@ -102,6 +105,7 @@ const state = {
         .then((data) => {
           currentState.roomId = data.id;
           this.setState(currentState);
+          //este callback sirve para ejecutar una funcion luego de que el room fue creado
           if (callback) {
             callback();
           }
@@ -110,6 +114,7 @@ const state = {
       console.error("no hay userId");
     }
   },
+  //obtiene el id largo de un room de la database
   joinRoom() {
     const currentState = state.getState();
     fetch(
@@ -129,6 +134,7 @@ const state = {
         state.listenMessages();
       });
   },
+  //Se subscribe a un room y obtiene los datos cuando hay mensajes nuevos
   listenMessages() {
     const currentState = this.getState();
     if (currentState.realTimeId) {
@@ -147,6 +153,7 @@ const state = {
       console.error("no se encontro el room");
     }
   },
+  //guarda un nuevo mensaje en la database
   pushMessage(msj) {
     const currentState = this.getState();
     const objMessage = {
